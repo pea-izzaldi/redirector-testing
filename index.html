@@ -1,28 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>IOD Ngoprek - Redirector</title>
+    <title>Redirector - IlmuOne Data Ngoprek</title>
 </head>
 <body>
     <script>
+        // 1. Ambil query string (?utm_source=fb...)
         const queryString = window.location.search;
-        // Ganti & jadi %26 supaya parameter UTM aman sampai di aplikasi
-        const sanitizedParams = queryString.substring(1).replace(/&/g, '%26');
         
-        // Custom Scheme sesuai manifest kamu
+        // 2. Setup link custom scheme untuk Re-engagement (buka app langsung)
         const customScheme = "ilmuone://promo" + queryString;
         
-        // Karena app tidak ada di Play Store, kita arahkan ke halaman sukses jika gagal
-        const fallbackPage = "https://pea-izzaldi.github.io/redirector-testing/success.html";
+        // 3. Setup link Play Store dengan encoding & menjadi %26
+        const packageName = "com.iod.ngoprek";
+        // Kita buang tanda '?' di awal dengan substring(1) lalu ganti &
+        const sanitizedReferrer = queryString.substring(1).replace(/&/g, '%26');
+        const playStoreLink = "https://play.google.com/store/apps/details?id=" + packageName + "&referrer=" + sanitizedReferrer;
 
-        // Mencoba membuka aplikasi
+        // --- EKSEKUSI ---
+        
+        // Coba buka aplikasi dulu (untuk user yang sudah install)
         window.location.href = customScheme;
 
-        // Jika app tidak terinstall, dalam 2.5 detik lempar ke halaman informasi
+        // Fallback ke Play Store setelah 2 detik
         setTimeout(function() {
-            window.location.href = fallbackPage + "?status=app_not_found&" + sanitizedParams;
-        }, 2500);
+            window.location.href = playStoreLink;
+        }, 2000);
     </script>
-    <p>Mengarahkan ke aplikasi com.iod.ngoprek...</p>
+    <div style="text-align: center; margin-top: 50px; font-family: sans-serif;">
+        <p>Mengarahkan ke aplikasi...</p>
+        <p style="font-size: 12px; color: gray;">Jika tidak otomatis, <a id="manual" href="#">klik di sini</a></p>
+    </div>
+    <script>
+        document.getElementById('manual').href = playStoreLink;
+    </script>
 </body>
 </html>
