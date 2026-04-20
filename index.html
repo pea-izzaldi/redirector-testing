@@ -1,47 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Redirecting to App...</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f4f4f9; }
-        .loader { text-align: center; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
+    <title>IOD Ngoprek - Redirector</title>
 </head>
 <body>
-    <div class="loader">
-        <div class="spinner"></div>
-        <h2>Menghubungkan ke Aplikasi...</h2>
-        <p>Jika tidak teralihkan otomatis, <a id="manual-link" href="#">klik di sini</a>.</p>
-    </div>
-
     <script>
-        // 1. Ambil query string dari URL (misal: ?utm_source=fb&utm_medium=ads)
-        const queryString = window.location.search; 
+        const queryString = window.location.search;
+        // Ganti & jadi %26 supaya parameter UTM aman sampai di aplikasi
+        const sanitizedParams = queryString.substring(1).replace(/&/g, '%26');
         
-        // 2. Konfigurasi
-        const packageName = "com.iod.ngoprek"; // Ganti dengan package name IlmuOne Data / Client
-        const appLink = "https://www.alditesting.com/open" + queryString;
-
-        // 3. Logic REPLACER (& menjadi %26) agar Play Store Referrer tidak rusak
-        // Kita hapus tanda '?' di awal dengan substring(1) lalu ganti semua &
-        const sanitizedReferrer = queryString.substring(1).replace(/&/g, '%26');
+        // Custom Scheme sesuai manifest kamu
+        const customScheme = "ilmuone://promo" + queryString;
         
-        const playStoreLink = "https://play.google.com/store/apps/details?id=" + packageName + "&referrer=" + sanitizedReferrer;
+        // Karena app tidak ada di Play Store, kita arahkan ke halaman sukses jika gagal
+        const fallbackPage = "https://pea-izzaldi.github.io/redirector-testing/success.html";
 
-        // Pasang di link manual buat jaga-jaga
-        document.getElementById('manual-link').href = playStoreLink;
+        // Mencoba membuka aplikasi
+        window.location.href = customScheme;
 
-        // 4. Eksekusi Redirect
-        // Coba buka aplikasi dulu (App Links)
-        window.location.href = appLink;
-
-        // Fallback: Jika app tidak terinstall, dalam 2.5 detik lempar ke Play Store
+        // Jika app tidak terinstall, dalam 2.5 detik lempar ke halaman informasi
         setTimeout(function() {
-            window.location.href = playStoreLink;
+            window.location.href = fallbackPage + "?status=app_not_found&" + sanitizedParams;
         }, 2500);
     </script>
+    <p>Mengarahkan ke aplikasi com.iod.ngoprek...</p>
 </body>
 </html>
