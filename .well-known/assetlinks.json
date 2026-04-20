@@ -3,7 +3,7 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.iod.ngoprel",
+      "package_name": "com.iod.ngoprek",
       "sha256_cert_fingerprints": [
         "75:97:D6:24:79:AF:1F:D9:C2:A6:53:D4:4C:FD:C4:13:89:25:70:28:2B:D7:F2:D5:CB:85:1F:D6:FA:63:71:12"
       ]
